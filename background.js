@@ -1,4 +1,4 @@
-const IDLE_TIME_IN_MINUTES = 1; // Set how long (in minutes) a tab can stay open
+const IDLE_TIME_IN_MINUTES = 0.1; // Set how long (in minutes) a tab can stay open
 
 // Monitor when a tab is updated (e.g., loaded or navigated)
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
@@ -21,7 +21,7 @@ chrome.alarms.onAlarm.addListener((alarm) => {
     const tabId = parseInt(match[1], 10);
     console.log(`Alarm triggered for tab ${tabId}`);
 
-    // Send a message to the content script in the tab
+    // Sends a message to content.js to trigger the flashing red circle and reminder overlay
     chrome.tabs.sendMessage(tabId, { action: "showReminder" }, (response) => {
       if (chrome.runtime.lastError) {
         console.error(`Failed to send message to tab ${tabId}: ${chrome.runtime.lastError.message}`);
@@ -31,5 +31,4 @@ chrome.alarms.onAlarm.addListener((alarm) => {
     });
   }
 });
-
 
