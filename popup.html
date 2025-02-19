@@ -1,13 +1,40 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Tab Manager</title>
-  <style>
-    body { font-family: Arial, sans-serif; width: 200px; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TabMaster Settings</title>
+    <script src="popup.js" defer></script>
+    <script src="favicon.js" defer></script>
+    <script src="tailwind.js"></script> <!-- Use Tailwind via CDN -->
 </head>
-<body>
-  <h2>Tab Manager</h2>
-  <p>Alerts you if a tab is left open too long.</p>
+<body class="p-4 bg-gray-100 min-w-[300px]">
+    <h1 class="text-xl font-bold mb-4">TabMaster Settings</h1>
+
+    <div class="mb-4">
+        <label class="block font-medium">Message Time:</label>
+        <input type="time" id="messageTime" class="border p-2 rounded w-full">
+    </div>
+
+    <div class="mb-4">
+        <label class="block font-medium">Favicon Flash Time:</label>
+        <input type="time" id="flashTime" class="border p-2 rounded w-full">
+    </div>
+
+    <button id="saveBtn" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-full">
+        Save Settings
+    </button>
+
+    <div class="mt-4 flex justify-between">
+        <button id="startFlashBtn" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+            Start Flashing
+        </button>
+        <button id="stopFlashBtn" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
+            Stop Flashing
+        </button>
+    </div>
+
+    <p id="statusMessage" class="text-sm text-gray-700 mt-2"></p>
 </body>
 </html>
+
