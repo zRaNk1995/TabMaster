@@ -1,34 +1,81 @@
-const IDLE_TIME_IN_MINUTES = 0.1; // Set how long (in minutes) a tab can stay open
+let idleTime = 0;
+let tabId = null;
+let timerInterval = null;
 
-// Monitor when a tab is updated (e.g., loaded or navigated)
-chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-  if (changeInfo.status === "complete") {
-    console.log(`Tab ${tabId} loaded, resetting alarm.`);
-    resetAlarm(tabId);
-  }
-});
+// Start idle timer for a tab
+function startIdleTimer(tabId, duration) {
+  if (timerInterval) clearInterval(timerInterval);
 
-// Set an alarm for the tab
-function resetAlarm(tabId) {
-  chrome.alarms.create(`tab-${tabId}`, { delayInMinutes: IDLE_TIME_IN_MINUTES });
-  console.log(`Alarm set for tab ${tabId}`);
+  idleTime = 0;
+  console.log("Starting idle timer for tabId", tabId, "with duration", duration);
+
+  timerInterval = setInterval(() => {
+    idleTime++;
+    console.log("Idle time for tabId", tabId, ":", idleTime);
+
+    if (idleTime >= duration) {
+      flashFavicon(tabId);
+      showMessage(tabId);
+    }
+  }, 1000);
 }
 
-// Handle alarms when they trigger
-chrome.alarms.onAlarm.addListener((alarm) => {
-  const match = alarm.name.match(/^tab-(\d+)$/);
-  if (match) {
-    const tabId = parseInt(match[1], 10);
-    console.log(`Alarm triggered for tab ${tabId}`);
+// Flash the favicon inside the active tab using an SVG blob
+function flashFavicon(tabId) {
+  console.log("Flashing favicon for tabId", tabId);
 
-    // Sends a message to content.js to trigger the flashing red circle and reminder overlay
-    chrome.tabs.sendMessage(tabId, { action: "showReminder" }, (response) => {
-      if (chrome.runtime.lastError) {
-        console.error(`Failed to send message to tab ${tabId}: ${chrome.runtime.lastError.message}`);
-      } else {
-        console.log(`Reminder message sent to tab ${tabId}`, response);
-      }
+  chrome.scripting.executeScript({
+    target: { tabId: tabId },
+    function: toggleFaviconWithBlob
+  });
+}
+
+// Function to toggle favicon inside the tab using an SVG blob
+function toggleFaviconWithBlob() {
+  let isRed = true;
+  const link = document.querySelector("link[rel~='icon']") || document.createElement("link");
+  link.rel = "icon";
+  document.head.appendChild(link);
+
+  setInterval(() => {
+    const svg = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+        <circle cx="8" cy="8" r="7" fill="${isRed ? 'red' : 'transparent'}" />
+      </svg>`;
+    
+    // Convert SVG to a Blob URL
+    const blob = new Blob([svg], { type: "image/svg+xml" });
+    const blobUrl = URL.createObjectURL(blob);
+    
+    link.href = blobUrl;
+    
+    // Release memory from previous blob
+    setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+
+    isRed = !isRed;
+  }, 1000);
+}
+
+// Show message on the tab after idle time is reached
+function showMessage(tabId) {
+  chrome.tabs.sendMessage(tabId, { action: 'showMessage' });
+}
+
+// Listen for tab activation
+chrome.tabs.onActivated.addListener((activeInfo) => {
+  const activeTabId = activeInfo.tabId;
+  chrome.storage.sync.get('duration', (data) => {
+    const duration = data.duration || 1;
+    startIdleTimer(activeTabId, duration);
+  });
+});
+
+// Listen for tab updates
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  if (changeInfo.status === 'complete' && tab.active) {
+    chrome.storage.sync.get('duration', (data) => {
+      const duration = data.duration || 1;
+      startIdleTimer(tabId, duration);
     });
   }
 });
-

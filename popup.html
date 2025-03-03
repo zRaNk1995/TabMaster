@@ -1,40 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TabMaster Settings</title>
-    <script src="popup.js" defer></script>
-    <script src="favicon.js" defer></script>
-    <script src="tailwind.js"></script> <!-- Use Tailwind via CDN -->
-</head>
-<body class="p-4 bg-gray-100 min-w-[300px]">
-    <h1 class="text-xl font-bold mb-4">TabMaster Settings</h1>
-
-    <div class="mb-4">
-        <label class="block font-medium">Message Time:</label>
-        <input type="time" id="messageTime" class="border p-2 rounded w-full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tabmaster Settings</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <h1>Tabmaster Settings</h1>
+    <div>
+      <label for="duration">Set Tab Timeout Duration (in minutes):</label>
+      <input type="number" id="duration" min="1" value="1" />
     </div>
-
-    <div class="mb-4">
-        <label class="block font-medium">Favicon Flash Time:</label>
-        <input type="time" id="flashTime" class="border p-2 rounded w-full">
+    <div>
+      <label for="excludedSites">Excluded Sites (comma separated):</label>
+      <input type="text" id="excludedSites" />
     </div>
-
-    <button id="saveBtn" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-full">
-        Save Settings
-    </button>
-
-    <div class="mt-4 flex justify-between">
-        <button id="startFlashBtn" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
-            Start Flashing
-        </button>
-        <button id="stopFlashBtn" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
-            Stop Flashing
-        </button>
-    </div>
-
-    <p id="statusMessage" class="text-sm text-gray-700 mt-2"></p>
-</body>
+    <button id="savePreferences">Save Preferences</button>
+    <script src="popup.js"></script>
+  </body>
 </html>
-
