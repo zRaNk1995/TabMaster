@@ -1,22 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tabmaster Settings</title>
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <h1>Tabmaster Settings</h1>
-    <div>
-      <label for="duration">Set Tab Timeout Duration (in minutes):</label>
-      <input type="number" id="duration" min="1" value="1" />
-    </div>
-    <div>
-      <label for="excludedSites">Excluded Sites (comma separated):</label>
-      <input type="text" id="excludedSites" />
-    </div>
-    <button id="savePreferences">Save Preferences</button>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TabMaster Settings</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            width: 250px;
+            padding: 10px;
+        }
+        button {
+            margin-top: 5px;
+            display: block;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h3>TabMaster Settings</h3>
+    <label for="duration">Idle Time (seconds):</label>
+    <input type="number" id="duration" min="1">
+    <button id="save">Save</button>
+
+    <h4>Excluded Websites</h4>
+    <button id="add-exclude">Exclude Current Website</button>
+    <button id="remove-exclude">Remove Current Website</button>
+
+    <ul id="excluded-list"></ul>
+
     <script src="popup.js"></script>
-  </body>
+</body>
 </html>
